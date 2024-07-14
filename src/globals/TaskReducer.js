@@ -1,4 +1,3 @@
-import React from "react";
 
 // the starting state of the todo tasks (an empty array)
 export const initialState = []
