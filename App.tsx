@@ -1,5 +1,5 @@
 
-import { useReducer, useState } from 'react';
+import { useReducer } from 'react';
 import {Button, StyleSheet, Text, TextInput, View, FlatList, TouchableOpacity} from 'react-native';
 import tasksReducer from './src/globals/TaskReducer';
 import { initialState } from './src/globals/TaskReducer';
