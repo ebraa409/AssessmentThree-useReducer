@@ -1,118 +1,96 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { useReducer, useState } from 'react';
+import {Button, StyleSheet, Text, TextInput, View, FlatList, TouchableOpacity} from 'react-native';
+import tasksReducer from './src/globals/TaskReducer';
+import { initialState } from './src/globals/TaskReducer';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const  App = () =>  {
+  const [todos, dispatch] = useReducer(tasksReducer, initialState)
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  let inputValue = ''
+
+  // Function to handle adding a task
+  const addTask = () => {
+    if (inputValue) {
+      dispatch ({type: 'add_task', text: inputValue})
+    }
+  }
+
+  // Function to handle deleting a task
+  const deleteTask = (id) => {
+    dispatch({type: 'delete_task', id})
+  }
+
+  // Function to handle task status
+  const toggleTask = (id) => {
+    dispatch({type: 'toggle_task', id})
+  }
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Todo List</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Todo"
+        onChangeText={(text) => inputValue = text}
+        />
+      <Button title="Add Todo" onPress={addTask}/>
+      <Text>{}</Text>
+
+      <View>
+        
+      <FlatList
+        data={todos}
+        renderItem={({ item }) => (
+          
+          <View>
+            
+            <Text style={styles.title}>{item.text}</Text>
+            <Text>{}</Text>
+
+            <TouchableOpacity onPress={() => toggleTask(item.id)}>
+              <Text style={styles.complete}>{item.completed ? 'Re-Open' : 'Complete'}</Text>
+            </TouchableOpacity>
+            <Text>{}</Text>
+            <TouchableOpacity onPress={() => deleteTask(item.id)}>
+              <Text style={styles.delete}>Delete</Text>
+            </TouchableOpacity>
+            <Text>{}</Text>
+
+          </View>
+        )}
+        keyExtractor={(item) => (item.id ? item?.id.toString() : 'fallback-key')}></FlatList>
+      </View>
     </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: 'black',
   },
-  sectionTitle: {
+  title: {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  input: {
+    height: 40,
+    borderColor: 'cyan',
+    borderWidth: 1,
+    marginBottom: 10,
   },
-  highlight: {
-    fontWeight: '700',
+  delete: {
+    color: 'red'
   },
+  complete: {
+    color: 'green'
+  }
 });
+
+
 
 export default App;
